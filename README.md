@@ -27,6 +27,7 @@ int main(int argc,char**argv)
     return 0;
 }
 ```
+
 ```c
 #include <GL/glut.h>
 void display()
