@@ -162,7 +162,7 @@ int main(int argc,char**argv)
     return 0;
 }
 ```
-
+這是可以用滑鼠順順的畫圖
 ```c
 #include <GL/glut.h>
 #include <stdio.h>
@@ -200,4 +200,51 @@ int main(int argc,char**argv)
     glutMotionFunc(motion);
     glutMainLoop();
 }
+```
+這是一個可以用把滑鼠放在圖中 然後用鍵盤按出座標的城市碼
+```c
+#include <GL/glut.h>
+#include <stdio.h>
+float x=0, y=0,z=0,oldX,oldY;
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glPushMatrix();
+        glTranslatef( (x-150)/150.0 , -(y-150)/150.0, z);
+
+        glColor3f(1,1,0);
+        glutSolidTeapot(0.3);
+    glPopMatrix();
+    glutSwapBuffers();
+}
+void keyboard (unsigned char key, int x, int y)
+{
+        printf("現在按下:%c 座標在: %x %x\n" ,key,x,y);
+}
+void mouse(int button, int state,int mouseX,int mouseY)
+{
+    oldX = mouseX; oldY = mouseY;
+}
+void motion (int mouseX,int mouseY)
+{
+    x += (mouseX-oldX);
+    y += (mouseY-oldY);
+    oldX = mouseX; oldY=mouseY;
+    display();
+}
+int main(int argc , char**argv)
+{
+
+    glutInit(&argc,argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("week06 keyboard");
+
+    glutDisplayFunc( display );
+    glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
+    glutMainLoop();
+    return 0;
+}
+
 ```
