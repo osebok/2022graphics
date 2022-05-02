@@ -383,3 +383,57 @@ int main(int argc , char**argv)
     }
 
 ```
+```c
+#include <opencv/highgui.h> ///¨Ï¥Î OpenCV 2.1 ¤ñ¸ûÂ²³æ, ¥u­n¥Î High GUI §Y¥i
+#include <opencv/cv.h>
+#include <GL/glut.h>
+#include "glm.h"
+GLMmodel * pmodel=NULL;
+int myTexture(char * filename)
+
+{
+
+    IplImage * img = cvLoadImage(filename); ///OpenCVÅª¹Ï
+    cvCvtColor(img,img, CV_BGR2RGB); ///OpenCVÂà¦â±m (»Ý­ncv.h)
+    glEnable(GL_TEXTURE_2D); ///1. ¶}±Ò¶K¹Ï¥\¯à
+    GLuint id; ///·Ç³Æ¤@­Ó unsigned int ¾ã¼Æ, ¥s ¶K¹ÏID
+    glGenTextures(1, &id); /// ²£¥ÍGenerate ¶K¹ÏID
+    glBindTexture(GL_TEXTURE_2D, id); ///¸j©wbind ¶K¹ÏID
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+    return id;
+
+}
+float angle=0;
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    if(pmodel == NULL){
+        pmodel=glmReadOBJ("data/gundam.obj");
+        glmUnitize(pmodel);
+        glmFacetNormals(pmodel);
+        glmVertexNormals(pmodel,90);
+    }
+    glPushMatrix();
+    glRotatef(angle,0,1,0);
+    glmDraw(pmodel,GLM_TEXTURE);
+    glutSwapBuffers();
+    angle+=1;
+}
+int main(int argc,char**argv)
+{
+    glutInit(&argc,argv);
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
+    glutCreateWindow("week11 gundam");
+
+    glutDisplayFunc(display);
+    glutIdleFunc(display);
+    myTexture("data/Diffuse.jpg");
+    glEnable(GL_DEPTH_TEST);
+
+    glutMainLoop();
+}
+````
